@@ -5,7 +5,7 @@ from datetime import datetime
 # Paths
 # ---------------------------------------------------------------------------
 Q2_DIR = os.path.dirname(os.path.abspath(__file__))
-OUT_DIR = Q2_DIR
+OUT_DIR = os.path.join(Q2_DIR, "results")
 os.makedirs(OUT_DIR, exist_ok=True)
 
 # ---------------------------------------------------------------------------
