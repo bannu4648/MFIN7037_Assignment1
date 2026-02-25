@@ -12,8 +12,6 @@ MFIN7037_Assignment1/
 ├── requirements.txt           ← combined dependencies for all three questions
 │
 ├── Question 1/                ← Asset Allocation
-│   ├── README.md
-│   ├── requirements.txt
 │   ├── code/
 │   │   ├── Q1_1_damodaran_empirical_properties.py
 │   │   ├── Q1_2_mpf_category_summary_stats.py
@@ -24,8 +22,6 @@ MFIN7037_Assignment1/
 │       └── mpf_category_annual_returns.csv
 │
 ├── Question 2/                ← Smart Beta ETFs (SPMO)
-│   ├── README_Q2.md
-│   ├── requirements.txt
 │   ├── q2_config.py           ← dates, tickers, URLs — edit here to customise
 │   ├── q2_common.py           ← shared download helpers
 │   ├── q2_1_spmo_umd_beta.py
@@ -37,8 +33,6 @@ MFIN7037_Assignment1/
 │   └── q2_run_all.py
 │
 └── Question 3/                ← Global Macro Factor Attribution
-    ├── README.md
-    ├── requirements.txt
     ├── code/
     │   ├── data_prep.py       ← data loading + FRED / AQR / JKP fetching
     │   ├── model_utils.py     ← OLS helpers, diagnostics, comparison tables
