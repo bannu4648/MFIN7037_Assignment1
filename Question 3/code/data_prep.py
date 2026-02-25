@@ -1,3 +1,7 @@
+# BHATI, Abhimanyu, 3036393745
+# KABANI, Sameer, 3036384012
+# VOBBILISETTY, Sai Navyanth, 3036384139
+
 """Data preparation — loads local files, fetches FRED macro proxies, AQR
 multi-asset factor returns, and HFGM ETF data.
 

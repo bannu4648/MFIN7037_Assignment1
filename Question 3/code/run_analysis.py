@@ -1,3 +1,7 @@
+# BHATI, Abhimanyu, 3036393745
+# KABANI, Sameer, 3036384012
+# VOBBILISETTY, Sai Navyanth, 3036384139
+
 """Global macro factor attribution analysis.
 
 Runs the full pipeline:

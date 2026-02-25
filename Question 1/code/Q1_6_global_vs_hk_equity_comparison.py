@@ -1,3 +1,7 @@
+# BHATI, Abhimanyu, 3036393745
+# KABANI, Sameer, 3036384012
+# VOBBILISETTY, Sai Navyanth, 3036384139
+
 """
 Q1.6: Global vs HK/Greater China equity — cumulative growth of $1 and annualised return
 (2010–2024). How much better would HK investors have done in global equity?

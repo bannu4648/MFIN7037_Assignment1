@@ -1,3 +1,7 @@
+# BHATI, Abhimanyu, 3036393745
+# KABANI, Sameer, 3036384012
+# VOBBILISETTY, Sai Navyanth, 3036384139
+
 """
 Q1.7 (Extra credit): ETF vs MPF funds — low-cost global ETF (VT) vs HK equities and vs MPF global equity.
 

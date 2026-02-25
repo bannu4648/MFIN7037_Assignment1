@@ -1,3 +1,7 @@
+# BHATI, Abhimanyu, 3036393745
+# KABANI, Sameer, 3036384012
+# VOBBILISETTY, Sai Navyanth, 3036384139
+
 """
 Q1.1 & Q1.2: Empirical properties of asset classes from Damodaran's historical returns.
 Computes annualized return, volatility, Sharpe ratio (T-Bill as Rf), and correlation

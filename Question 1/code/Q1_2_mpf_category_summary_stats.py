@@ -1,3 +1,7 @@
+# BHATI, Abhimanyu, 3036393745
+# KABANI, Sameer, 3036384012
+# VOBBILISETTY, Sai Navyanth, 3036384139
+
 """
 Q1.2 (supplementary): MPF category summary statistics — mean return, volatility, Sharpe ratio.
 Uses MPF category returns (HK scheme) for full sample and allocation funds.
