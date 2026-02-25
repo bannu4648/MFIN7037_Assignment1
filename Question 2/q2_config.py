@@ -13,6 +13,14 @@ OUT_DIR = os.path.join(Q2_DIR, "results")
 os.makedirs(OUT_DIR, exist_ok=True)
 
 # ---------------------------------------------------------------------------
+# CRSP data files (in the data/ sub-folder).
+# When both files exist, CRSP is used automatically instead of yfinance.
+# ---------------------------------------------------------------------------
+CRSP_DATA_DIR   = os.path.join(Q2_DIR, "data")
+CRSP_MSF_FILE   = os.path.join(CRSP_DATA_DIR, "crsp_202501.msf_v2.parquet")   # Monthly Stock File v2
+CRSP_NAMES_FILE = os.path.join(CRSP_DATA_DIR, "crsp_202501.dsenames.parquet")  # ticker → PERMNO lookup
+
+# ---------------------------------------------------------------------------
 # Sample period (used for SPMO and other ETFs)
 # ---------------------------------------------------------------------------
 START_DATE = "2015-10-01"

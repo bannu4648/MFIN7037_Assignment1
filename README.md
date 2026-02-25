@@ -30,7 +30,10 @@ MFIN7037_Assignment1/
 │   ├── q2_4_ff6_controls.py
 │   ├── q2_5_other_etfs.py
 │   ├── q2_report.py
-│   └── q2_run_all.py
+│   ├── q2_run_all.py
+│   └── data/
+│       ├── crsp_202501.dsenames.parquet   ← ticker → PERMNO lookup (included)
+│       └── crsp_202501.msf_v2.parquet     ← CRSP monthly returns (~192 MB, NOT in repo)
 │
 └── Question 3/                ← Global Macro Factor Attribution
     ├── code/
@@ -79,7 +82,13 @@ Outputs are written to `Question 1/results/` (auto-created on first run).
 
 ### 3. Question 2 — Smart Beta ETFs (SPMO)
 
-All data is downloaded automatically at runtime. To customise the sample period or tickers, edit `q2_config.py`.
+**CRSP data required:** Place the two CRSP parquet files (provided via course Dropbox) into `Question 2/data/` before running:
+- `crsp_202501.msf_v2.parquet` — CRSP Monthly Stock File v2 (ETF return source, ~192 MB, not in repo)
+- `crsp_202501.dsenames.parquet` — ticker → PERMNO lookup table (~4 MB, included in repo)
+
+If the CRSP files are absent, the pipeline automatically falls back to `yfinance` for ETF returns.
+
+To customise the sample period or tickers, edit `q2_config.py`.
 
 ```bash
 cd "Question 2"
@@ -171,10 +180,10 @@ The single largest driver is **TSMOM** (t-stat ≈ 7.6), confirming heavy trend-
 |---|:---:|:---:|:---:|---|
 | `numpy` | ✓ | ✓ | ✓ | Numerical computation |
 | `pandas` | ✓ | ✓ | ✓ | Data manipulation |
-| `yfinance` | ✓ | ✓ | ✓ | Download equity / ETF price history |
+| `yfinance` | ✓ | ✓ | ✓ | Download equity / ETF price history (Q2 fallback if CRSP absent) |
 | `xlrd==1.2.0` | ✓ | ✓ | — | Read legacy `.xls` files (Damodaran `histretSP.xls`) |
 | `openpyxl` | ✓ | — | ✓ | Read `.xlsx` files |
-| `pyarrow` | — | — | ✓ | Read `.parquet` files (FF5 factor data) |
+| `pyarrow` | — | ✓ | ✓ | Read `.parquet` files (CRSP data for Q2; FF5 factor data for Q3) |
 | `requests` | — | ✓ | ✓ | Download Ken French zip files, FRED, AQR data |
 | `statsmodels` | — | ✓ | ✓ | OLS regressions and diagnostic tests |
 | `scipy` | — | ✓ | — | Statistical tests (Jarque-Bera, Q-Q plots) |

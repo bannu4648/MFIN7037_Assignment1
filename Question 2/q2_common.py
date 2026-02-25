@@ -12,6 +12,8 @@ import requests
 import yfinance as yf
 
 from q2_config import (
+    CRSP_MSF_FILE,
+    CRSP_NAMES_FILE,
     END_DATE,
     OUT_DIR,
     REQUEST_TIMEOUT,
@@ -24,11 +26,77 @@ from q2_config import (
 )
 
 
+def load_etf_from_crsp(ticker, start=None, end=None):
+    """Load monthly ETF returns from CRSP msf_v2 parquet.
+
+    Steps (matching the lecture-03 notebook):
+      1. dsenames.parquet  → find all PERMNOs for this ticker
+      2. msf_v2.parquet    → pull mthcaldt + mthret for those PERMNOs
+      3. Rename, date-filter, deduplicate, apply return bounds
+    Returns a float Series (decimal returns) with month-end DatetimeIndex.
+    """
+    start_ts = pd.Timestamp(start or START_DATE)
+    end_ts   = pd.Timestamp(end   or END_DATE)
+
+    # ── Step 1: PERMNO lookup ──────────────────────────────────────────────
+    names = pd.read_parquet(CRSP_NAMES_FILE, columns=["permno", "ticker"])
+    permnos = names.loc[names["ticker"] == ticker, "permno"].unique().tolist()
+    if not permnos:
+        raise ValueError(f"Ticker '{ticker}' not found in {CRSP_NAMES_FILE}")
+
+    # ── Step 2: Monthly returns for those PERMNOs only ────────────────────
+    # Load only the three columns we need; pyarrow will skip the other 42.
+    msf = pd.read_parquet(
+        CRSP_MSF_FILE,
+        columns=["permno", "mthcaldt", "mthret"],
+    )
+    msf = msf[msf["permno"].isin(permnos)].copy()
+
+    # ── Step 3: Clean up ──────────────────────────────────────────────────
+    msf = msf.rename(columns={"mthcaldt": "date", "mthret": "ret"})
+    msf["date"] = pd.to_datetime(msf["date"])
+
+    # Date range
+    msf = msf[(msf["date"] >= start_ts) & (msf["date"] <= end_ts)]
+
+    # Drop missing returns, then deduplicate by date (keep the PERMNO with
+    # the most recent nameendt – here we simply keep the last row per date
+    # after sorting, which is safe for a single-ticker ETF)
+    msf = msf.dropna(subset=["ret"])
+    msf = msf.sort_values("date").drop_duplicates(subset="date", keep="last")
+
+    ret = msf.set_index("date")["ret"].rename(ticker)
+
+    # Apply the same return-bound filter used by the yfinance path
+    ret = ret[(ret >= RETURN_MIN) & (ret <= RETURN_MAX)]
+
+    if ret.empty:
+        raise ValueError(f"No CRSP data for '{ticker}' in [{start_ts.date()}, {end_ts.date()}]")
+
+    print(f"  {ticker} (CRSP): {ret.index.min().strftime('%Y-%m')} to "
+          f"{ret.index.max().strftime('%Y-%m')}, n={len(ret)}")
+    return ret
+
+
 def download_spmo_monthly(ticker="SPMO", start=None, end=None):
-    """Download ETF monthly returns (default SPMO). Returns series with DatetimeIndex."""
+    """Load ETF monthly returns.
+
+    Uses CRSP msf_v2 if both parquet files exist in data/; otherwise falls
+    back to yfinance.  The returned Series has a month-end DatetimeIndex and
+    decimal (not percentage) returns.
+    """
+    # ── CRSP path (preferred) ─────────────────────────────────────────────
+    if os.path.isfile(CRSP_MSF_FILE) and os.path.isfile(CRSP_NAMES_FILE):
+        try:
+            print(f"Downloading {ticker} data...")
+            return load_etf_from_crsp(ticker, start=start, end=end)
+        except Exception as e:
+            print(f"  CRSP load failed for {ticker} ({e}); falling back to yfinance...")
+
+    # ── yfinance fallback ─────────────────────────────────────────────────
     start = start or START_DATE
-    end = end or END_DATE
-    print(f"Downloading {ticker} data...")
+    end   = end   or END_DATE
+    print(f"Downloading {ticker} data (yfinance)...")
     data = yf.download(ticker, start=start, end=end, progress=False, auto_adjust=True)
     if data.empty:
         data = yf.download(ticker, start=start, end=end, progress=False)
